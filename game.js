@@ -8,6 +8,7 @@ const downButton = document.getElementById('down');
 let canvasSize;
 let elementsSize;
 let level = 0;
+let lives = 3;
 
 const playerPosition = {
     x: undefined,
@@ -15,6 +16,11 @@ const playerPosition = {
 };
 
 const giftPosition = {
+    x: undefined,
+    y: undefined,
+}
+
+const doorPosition = {
     x: undefined,
     y: undefined,
 }
@@ -64,17 +70,22 @@ function startGame() {
             const posX = elementsSize * (colI + 1);
             const posY = elementsSize * (rowI + 1);
             
+            // if (level = 1) {
+            //     doorPosition.x = posX;
+            //     doorPosition.y = posY;
+            //     console.log('Posicion de puerta cambiada')
+            // }
+
             if (col == 'O') {
                 if (!playerPosition.x && !playerPosition.y) {
                     playerPosition.x = posX;
                     playerPosition.y = posY;
-                    console.log({ playerPosition })
+                    // console.log({ playerPosition })
+                    // console.log({doorPosition})
                 }
             } else if (col == 'I') {
                     giftPosition.x = posX;
-                    giftPosition.y = posY;
-                    console.log({ giftPosition })
-                
+                    giftPosition.y = posY;                
             } else if (col == 'X') {
                 bombs.push({
                     x: posX,
@@ -110,6 +121,7 @@ function movePlayer() {
         levelWin();
     }
 
+
     const bombCollision = bombs.find(enemy => {
         const bombCollisionX = enemy.x.toFixed(1) == playerPosition.x.toFixed(1);
         const bombCollisionY = enemy.y.toFixed(1) == playerPosition.y.toFixed(1);
@@ -117,7 +129,7 @@ function movePlayer() {
     });
 
     if (bombCollision) {
-        console.log('BOOM!')
+        youDied();
     }
 
     game.fillText(emojis['PLAYER'], playerPosition.x, playerPosition.y);
@@ -140,6 +152,24 @@ function gameWin() {
     console.log('Terminaste el Juego!')
 }
 
+function youDied() {
+    console.log('BOOM!');
+    lives --;
+    console.log({lives})
+    
+    if (lives <= 0) {
+        console.log('GAME OVER');
+        level = 0;
+        lives = 3;
+    }
+
+    //works because it sets playerPosition to undefined, so it gets the position of the Door.
+    playerPosition.x = doorPosition.x;
+    playerPosition.y = doorPosition.y;
+    startGame()
+}
+
+
 //movimientos
 window.addEventListener('keydown', moveByKeys);
 upButton.addEventListener('click', moveUp);
@@ -155,10 +185,10 @@ function moveByKeys(event) {
 };
 
 function moveUp() {
-    console.log('UP');
+    // console.log('UP');
 
     if ((playerPosition.y - elementsSize) < elementsSize - 1) {
-        console.log('OUTSIDE');
+        // console.log('OUTSIDE');
     } else {
         playerPosition.y -= elementsSize;
         startGame()
@@ -166,27 +196,27 @@ function moveUp() {
 
 };
 function moveLeft() {
-    console.log('LEFT');
+    // console.log('LEFT');
     if ((playerPosition.x - elementsSize) < elementsSize) {
-        console.log('OUTSIDE');
+        // console.log('OUTSIDE');
     } else {
         playerPosition.x -= elementsSize;
         startGame()
     }
 };
 function moveRight() {
-    console.log('RIGHT');
+    // console.log('RIGHT');
     if ((playerPosition.x + elementsSize) > canvasSize + 2) {
-        console.log('OUTSIDE')
+        // console.log('OUTSIDE')
     } else {
         playerPosition.x += elementsSize;
         startGame()
     }
 };
 function moveDown() {
-    console.log('DOWN');
+    // console.log('DOWN');
     if ((playerPosition.y + elementsSize) > canvasSize) {
-        console.log('OUTSIDE')
+        // console.log('OUTSIDE')
     } else {
         playerPosition.y += elementsSize;
         startGame()
