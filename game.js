@@ -4,11 +4,19 @@ const upButton = document.getElementById('up');
 const leftButton = document.getElementById('left');
 const rightButton = document.getElementById('right');
 const downButton = document.getElementById('down');
+const spanLives = document.getElementById('lives');
+const spanTime = document.getElementById('time');
+const spanRecord = document.getElementById('record');
 
 let canvasSize;
 let elementsSize;
 let level = 0;
 let lives = 3;
+
+let timeStart;
+let timePlayer;
+let timeInterval;
+
 
 const playerPosition = {
     x: undefined,
@@ -33,9 +41,9 @@ window.addEventListener('resize', setCanvasSize);
 
 function setCanvasSize() {
     if (window.innerHeight > window.innerWidth) {
-        canvasSize = window.innerWidth * 0.8;
+        canvasSize = window.innerWidth * 0.7;
     } else {
-        canvasSize = window.innerHeight * 0.8;
+        canvasSize = window.innerHeight * 0.7;
     };
 
     canvas.setAttribute('width', canvasSize);
@@ -46,22 +54,40 @@ function setCanvasSize() {
     startGame()
 }
 
+
+
 function startGame() {
     // console.log({ canvasSize, elementsSize });
-    
+
     game.font = elementsSize + 'px Verdana';
     game.textAlign = 'end';
-    
+
+    let record = localStorage.getItem('record_time');
+
     const map = maps[level];
-    
+
     if (!map) {
         gameWin();
         return;
     }
-    
+
+    if (!record) {
+        spanRecord.innerHTML = 'Win a game to get a score!';
+    } else {
+        spanRecord.innerHTML = formatTime(record);
+    }
+
+    if (!timeStart) {
+        timeStart = Date.now();
+        timeInterval = setInterval(showTime, 10);
+    }
+
     const mapRows = map.trim().split('\n');
     const mapRowCols = mapRows.map(row => row.trim().split(''));
-    
+
+    showLives();
+
+
     bombs = [];
     game.clearRect(0, 0, canvasSize, canvasSize);
     mapRowCols.forEach((row, rowI) => {
@@ -69,12 +95,7 @@ function startGame() {
             const emoji = emojis[col]
             const posX = elementsSize * (colI + 1);
             const posY = elementsSize * (rowI + 1);
-            
-            // if (level = 1) {
-            //     doorPosition.x = posX;
-            //     doorPosition.y = posY;
-            //     console.log('Posicion de puerta cambiada')
-            // }
+
 
             if (col == 'O') {
                 if (!playerPosition.x && !playerPosition.y) {
@@ -84,14 +105,15 @@ function startGame() {
                     // console.log({doorPosition})
                 }
             } else if (col == 'I') {
-                    giftPosition.x = posX;
-                    giftPosition.y = posY;                
+                giftPosition.x = posX;
+                giftPosition.y = posY;
             } else if (col == 'X') {
                 bombs.push({
                     x: posX,
                     y: posY,
                 });
             }
+
 
             game.fillText(emoji, posX, posY);
         });
@@ -149,18 +171,40 @@ function levelWin() {
 }
 
 function gameWin() {
-    console.log('Terminaste el Juego!')
+    console.log('Terminaste el Juego!');
+    clearInterval(timeInterval);
+
+
+    if (!localStorage.getItem('record_time')) {
+        //if first victory:
+        localStorage.setItem('record_time', timer);
+    }
+    
+    var recordTime = localStorage.getItem('record_time');
+    
+    localStorage.getItem('record_time');
+    if (timer < recordTime) {
+        localStorage.setItem('record_time', timer);
+        console.log('New Record!');
+    } else if (timer > recordTime) {
+        console.log('Too Slow! try again');
+    }
+    
+    spanTime.innerHTML = (formatTime(timer))
+
 }
+
 
 function youDied() {
     console.log('BOOM!');
-    lives --;
-    console.log({lives})
-    
+    lives--;
+    console.log({ lives })
+
     if (lives <= 0) {
         console.log('GAME OVER');
         level = 0;
         lives = 3;
+        timeStart = undefined;
     }
 
     //works because it sets playerPosition to undefined, so it gets the position of the Door.
@@ -169,8 +213,31 @@ function youDied() {
     startGame()
 }
 
+function showLives() {
+    const heartsArray = Array(lives).fill(emojis['HEART']); // [1,2,3]
 
-//movimientos
+    spanLives.innerHTML = ""
+    heartsArray.forEach(heart => spanLives.append(heart));
+}
+
+function showTime() {
+
+    timer = Date.now() - timeStart;
+    // console.log(timeStart)
+    spanTime.innerHTML = (formatTime(timer))
+}
+
+function formatTime(ms) {
+    const cs = parseInt(ms / 10) % 100
+    const seg = parseInt(ms / 1000) % 60
+    const min = parseInt(ms / 60000) % 60
+    const csStr = `${cs}`.padStart(2, "0")
+    const segStr = `${seg}`.padStart(2, "0")
+    const minStr = `${min}`.padStart(2, "0")
+    return `${minStr}:${segStr}:${csStr}`
+}
+
+//movements
 window.addEventListener('keydown', moveByKeys);
 upButton.addEventListener('click', moveUp);
 rightButton.addEventListener('click', moveRight);
