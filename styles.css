@@ -46,12 +46,47 @@
     margin-right: 10px;
   }
   
+  .endgame-screen {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    width: 100vw;
+  }
+
+  #victory-title {
+    margin-top: 10vh;
+    color: #fdef05;
+    display: flex;
+    justify-content: center;
+  }
+
+  #restart {
+    display: flex;
+    justify-content: center;
+    width: 150px;
+    margin: auto;
+  }
+
+  #restart:hover {
+    border-color: red;
+  }
+
+  .endgame-message {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+  }
+
   .messages {
     display: flex;
     flex-wrap: wrap;
     margin: 0 auto;
     width: 80%;
     max-width: 460px;
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
   }
   
   p {

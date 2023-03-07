@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,25 +8,35 @@
     <link rel="stylesheet" href="./styles.css">
     <title>Dungeon Skully</title>
 </head>
+
+
 <body>
     <div class="game-container">
         <canvas id="game"></canvas>
-
+        
         <div class="btns">
             <button id="up">Up</button>
             <button id="left">Left</button>
             <button id="right">Right</button>
             <button id="down">Down</button>
         </div>
-
+        
+        <div class="endgame-screen">
+            <h1 id="victory-title">Game victory!</h1>
+            <button id="restart">Try again?</button>
+            <span class="endgame-message" id="first-victory"></span>
+            <p class="endgame-message"><span id="check-score"></span></p>
+        </div>
         <div class="messages">
-            <p>Vidas: <span id="lives"></span></p>
-            <p>Tiempo: <span id="time"></span></p>
-            <p>Tiempo Record: <span id="record"></span></p>
+            <p>Lives: <span id="lives"></span></p>
+            <p id="time-p">Time: <span id="time"></span></p>
+            <p>Record Time: <span id="record"></span></p>
         </div>
     </div>
+
 
     <script src="./maps.js"></script>
     <script src="./game.js"></script>
 </body>
+
 </html>

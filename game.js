@@ -7,6 +7,11 @@ const downButton = document.getElementById('down');
 const spanLives = document.getElementById('lives');
 const spanTime = document.getElementById('time');
 const spanRecord = document.getElementById('record');
+const restartScreen = document.querySelector('.endgame-screen');
+const restartButton = document.getElementById('restart');
+const spanCheckscore = document.getElementById('check-score');
+const spanFirstVictory = document.getElementById('first-victory');
+const hideTime = document.getElementById('time-p');
 
 let canvasSize;
 let elementsSize;
@@ -46,14 +51,16 @@ function setCanvasSize() {
         canvasSize = window.innerHeight * 0.7;
     };
 
+    canvasSize = Number(canvasSize.toFixed(0));
     canvas.setAttribute('width', canvasSize);
     canvas.setAttribute('height', canvasSize);
 
     elementsSize = canvasSize / 10;
-
+    
+    playerPosition.x = undefined;
+    playerPosition.y = undefined;
     startGame()
 }
-
 
 
 function startGame() {
@@ -178,6 +185,8 @@ function gameWin() {
     if (!localStorage.getItem('record_time')) {
         //if first victory:
         localStorage.setItem('record_time', timer);
+        spanFirstVictory.innerHTML = `Congratulations on your first scape, now try again to get a new highscore!`
+        spanCheckscore.innerHTML = `Actual score: ${formatTime(timer)}`;
     }
     
     var recordTime = localStorage.getItem('record_time');
@@ -185,13 +194,14 @@ function gameWin() {
     localStorage.getItem('record_time');
     if (timer < recordTime) {
         localStorage.setItem('record_time', timer);
-        console.log('New Record!');
+        spanCheckscore.innerHTML = `New highscore reached: ${formatTime(timer)}`;
     } else if (timer > recordTime) {
-        console.log('Too Slow! try again');
+        spanCheckscore.innerHTML = 'Too slow! Try again';
+        hideTime.style.display = 'none';
     }
     
     spanTime.innerHTML = (formatTime(timer))
-
+    endScreen()
 }
 
 
@@ -235,6 +245,21 @@ function formatTime(ms) {
     const segStr = `${seg}`.padStart(2, "0")
     const minStr = `${min}`.padStart(2, "0")
     return `${minStr}:${segStr}:${csStr}`
+}
+
+function endScreen() {
+    canvas.style.display = 'none';
+    upButton.style.display = 'none';
+    downButton.style.display = 'none';
+    leftButton.style.display = 'none';
+    rightButton.style.display = 'none';
+    restartScreen.style.display = 'block';
+
+    restartButton.addEventListener('click', reloadPage);
+}
+
+function reloadPage() {
+    window.location.reload();
 }
 
 //movements
