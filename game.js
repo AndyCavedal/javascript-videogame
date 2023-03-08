@@ -40,7 +40,6 @@ const doorPosition = {
 
 let bombs = [];
 
-
 window.addEventListener('load', setCanvasSize);
 window.addEventListener('resize', setCanvasSize);
 
@@ -187,6 +186,7 @@ function gameWin() {
         localStorage.setItem('record_time', timer);
         spanFirstVictory.innerHTML = `Congratulations on your first scape, now try again to get a new highscore!`
         spanCheckscore.innerHTML = `Actual score: ${formatTime(timer)}`;
+        hideTime.style.display = 'none';
     }
     
     var recordTime = localStorage.getItem('record_time');
